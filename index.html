@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZipLLM — Efficient LLM Storage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">ZipLLM</a>
+    <div class="nav-links">
+      <a href="#demo">Demo</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#explorer">BF16</a>
+      <a href="#bitx">BitX</a>
+      <a href="#algorithms">Code</a>
+      <a href="https://arxiv.org/abs/2505.06252" target="_blank" class="nav-ext">arXiv</a>
+      <a href="https://github.com/ds2-lab/ZipLLM" target="_blank" class="nav-ext">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<section id="hero" class="section hero">
+  <div class="hero-label">[ USENIX NSDI &#8217;26 ]</div>
+  <h1 class="hero-title">
+    <span class="hero-zip">Zip</span><span class="hero-llm">LLM</span>
+  </h1>
+  <p class="hero-subtitle">Efficient LLM Storage via Model-Aware<br>Synergistic Data Deduplication and Compression</p>
+  <div class="hero-authors">
+    Zirui Wang &#183; Tingfeng Lan &#183; Zhaoyuan Su &#183; Juncheng Yang &#183; Yue Cheng
+  </div>
+  <div class="hero-badges">
+    <span class="badge">Artifacts Available</span>
+    <span class="badge">Artifacts Functional</span>
+    <span class="badge">Results Reproduced</span>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-value">54.1%</div>
+      <div class="hero-stat-label">data reduction ratio</div>
+    </div>
+    <div class="hero-stat-sep"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">5.8 GB/s</div>
+      <div class="hero-stat-label">ingestion throughput</div>
+    </div>
+    <div class="hero-stat-sep"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">7.7 GB/s</div>
+      <div class="hero-stat-label">retrieval throughput</div>
+    </div>
+    <div class="hero-stat-sep"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-value">lossless</div>
+      <div class="hero-stat-label">zero accuracy loss</div>
+    </div>
+  </div>
+  <div class="hero-actions">
+    <a href="https://arxiv.org/abs/2505.06252" target="_blank" class="btn btn-primary">Read Paper</a>
+    <a href="https://github.com/ds2-lab/ZipLLM" target="_blank" class="btn btn-ghost">View Source</a>
+  </div>
+</section>
+
+<section id="demo" class="section">
+  <div class="section-label">[ LIVE DEMO ]</div>
+  <h2 class="section-title">Compression Live Demo</h2>
+  <p class="section-desc"></p>
+
+  <div class="demo-wrap">
+    <div class="demo-controls">
+      <button id="btn-demo-play" class="btn btn-primary">Play Both</button>
+      <button id="btn-demo-pause" class="btn btn-ghost">Pause</button>
+      <button id="btn-demo-restart" class="btn btn-ghost">Restart</button>
+    </div>
+
+    <div class="demo-grid">
+      <div class="demo-panel">
+        <div class="demo-panel-head">
+          <div class="demo-dots">
+            <span class="demo-dot" style="background:#ff3b3b"></span>
+            <span class="demo-dot" style="background:#ffd600"></span>
+            <span class="demo-dot" style="background:#00ff41"></span>
+          </div>
+          <span class="demo-tag demo-tag-zipnn">ZipNN (SOTA)</span>
+        </div>
+        <div class="demo-panel-body">
+          <video id="demo-zipnn" src="zipnn.mp4" muted preload="metadata"></video>
+        </div>
+      </div>
+
+      <div class="demo-panel">
+        <div class="demo-panel-head">
+          <div class="demo-dots">
+            <span class="demo-dot" style="background:#ff3b3b"></span>
+            <span class="demo-dot" style="background:#ffd600"></span>
+            <span class="demo-dot" style="background:#00ff41"></span>
+          </div>
+          <span class="demo-tag demo-tag-bitx">BitX (Ours)</span>
+        </div>
+        <div class="demo-panel-body">
+          <video id="demo-bitx" src="bitx.mp4" muted preload="metadata"></video>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-timeline">
+      <span class="demo-time" id="demo-time-current">0:00</span>
+      <div class="demo-progress" id="demo-progress">
+        <div class="demo-progress-fill" id="demo-progress-fill"></div>
+      </div>
+      <span class="demo-time" id="demo-time-total">0:00</span>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline" class="section">
+  <div class="section-label">[ PIPELINE ]</div>
+  <h2 class="section-title">Multi-Level Deduplication &#38; Compression</h2>
+  <p class="section-desc">3,048 LLMs (43.19 TB) share massive redundancy at file, tensor, and bit levels. ZipLLM exploits all three, achieving a 54.1% data reduction ratio.</p>
+
+  <div class="pipeline-wrap">
+    <div class="pipeline-controls">
+      <button id="btn-pipeline-run" class="btn btn-primary">Run Pipeline</button>
+      <button id="btn-pipeline-reset" class="btn btn-ghost">Reset</button>
+    </div>
+
+    <div class="accordion-wrap" id="accordion-wrap">
+      <div class="acc-panel active" id="acc-p0">
+        <div class="acc-header">
+          <span class="acc-num">00</span>
+          <span class="acc-title">Input</span>
+          <span class="acc-badge show" id="acc-b0">43.19 TB</span>
+        </div>
+        <div class="acc-bar-wrap">
+          <div class="acc-bar"><div class="acc-fill" id="acc-f0" style="width:100%;background:var(--text-3)"></div></div>
+        </div>
+      </div>
+      <div class="acc-panel" id="acc-p1">
+        <div class="acc-header">
+          <span class="acc-num">01</span>
+          <span class="acc-title">File Dedup</span>
+          <span class="acc-desc">xxHash per file &#183; skip identical files</span>
+          <span class="acc-badge" id="acc-b1">41.80 TB (-3.2%)</span>
+        </div>
+        <div class="acc-bar-wrap">
+          <div class="acc-bar"><div class="acc-fill" id="acc-f1" style="width:0%;background:var(--cyan)"></div></div>
+        </div>
+      </div>
+      <div class="acc-panel" id="acc-p2">
+        <div class="acc-header">
+          <span class="acc-num">02</span>
+          <span class="acc-title">Tensor Dedup</span>
+          <span class="acc-desc">xxHash per tensor &#183; skip identical tensors</span>
+          <span class="acc-badge" id="acc-b2">39.61 TB (-8.3%)</span>
+        </div>
+        <div class="acc-bar-wrap">
+          <div class="acc-bar"><div class="acc-fill" id="acc-f2" style="width:0%;background:var(--orange)"></div></div>
+        </div>
+      </div>
+      <div class="acc-panel" id="acc-p3">
+        <div class="acc-header">
+          <span class="acc-num">03</span>
+          <span class="acc-title">BitX</span>
+          <span class="acc-desc">BitX for finetune pairs &#183; ZipNN for solo tensors</span>
+          <span class="acc-badge" id="acc-b3">19.82 TB (-54.1%)</span>
+        </div>
+        <div class="acc-bar-wrap">
+          <div class="acc-bar"><div class="acc-fill" id="acc-f3" style="width:0%;background:var(--accent)"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="explorer" class="section">
+  <div class="section-label">[ BF16 EXPLORER ]</div>
+  <h2 class="section-title">Interactive Bit Explorer</h2>
+  <p class="section-desc">Adjust the delta to see how BF16 floating-point bits change.<br>Small weight updates flip very few bits &#8212; the foundation of BitX.</p>
+
+  <div class="explorer-wrap">
+    <div class="explorer-inputs">
+      <div class="input-group">
+        <label for="base-value">Base value</label>
+        <input type="number" id="base-value" value="1.0" step="0.01">
+      </div>
+      <div class="input-group slider-group">
+        <label for="delta-slider">Delta: <span id="delta-display">+0.000000</span></label>
+        <input type="range" id="delta-slider" min="-100" max="100" value="0" step="1">
+        <div class="slider-labels">
+          <span>-1.0</span>
+          <span>0</span>
+          <span>+1.0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="explorer-display">
+      <div class="explorer-row">
+        <span class="explorer-label">Original</span>
+        <div class="explorer-bits" id="exp-original-bits"></div>
+        <span class="explorer-val" id="exp-original-val"></span>
+      </div>
+      <div class="explorer-row">
+        <span class="explorer-label">Modified</span>
+        <div class="explorer-bits" id="exp-modified-bits"></div>
+        <span class="explorer-val" id="exp-modified-val"></span>
+      </div>
+      <div class="explorer-divider"></div>
+      <div class="explorer-row">
+        <span class="explorer-label">XOR</span>
+        <div class="explorer-bits" id="exp-xor-bits"></div>
+        <span class="explorer-val" id="exp-xor-val"></span>
+      </div>
+    </div>
+
+    <div class="explorer-stats">
+      <div class="exp-stat">
+        <div class="exp-stat-value" id="hamming-distance">0</div>
+        <div class="exp-stat-label">bits flipped</div>
+      </div>
+      <div class="exp-stat">
+        <div class="exp-stat-value" id="exp-bits-changed">0</div>
+        <div class="exp-stat-label">exponent bits</div>
+      </div>
+      <div class="exp-stat">
+        <div class="exp-stat-value" id="mant-bits-changed">0</div>
+        <div class="exp-stat-label">mantissa bits</div>
+      </div>
+      <div class="exp-stat">
+        <div class="exp-stat-value" id="sign-changed">0</div>
+        <div class="exp-stat-label">sign bit</div>
+      </div>
+    </div>
+
+    <div class="explorer-note">
+      BF16 layout: <code>[S]</code> 1-bit sign &#183; <code>[EEEEEEEE]</code> 8-bit exponent &#183; <code>[MMMMMMM]</code> 7-bit mantissa
+    </div>
+  </div>
+</section>
+
+<section id="bitx" class="section">
+  <div class="section-label">[ BITX ]</div>
+  <h2 class="section-title">Bit-Level XOR Transform</h2>
+  <p class="section-desc">Fine-tuned models differ from their base by only a few bits per weight.<br>BitX exploits this by XOR-ing, splitting byte streams, then compressing.</p>
+
+  <div class="bitx-wrap">
+    <div class="bitx-controls">
+      <button id="btn-bitx-run" class="btn btn-primary">Run BitX</button>
+      <button id="btn-bitx-reset" class="btn btn-ghost">Reset</button>
+    </div>
+
+    <div id="bitx-rain">
+      <!-- Phase 1: Base and Fine rain -->
+      <div class="rain-phase" id="rain-p1">
+        <div class="rain-phase-label">Phase 1 &#8212; Two weight tensors (16-bit BF16 each)</div>
+        <div class="rain-columns">
+          <div class="rain-col">
+            <div class="rain-col-label" style="color:var(--cyan)">Base model</div>
+            <div class="rain-rows" id="rain-base"></div>
+          </div>
+          <div class="rain-col">
+            <div class="rain-col-label" style="color:var(--orange)">Fine-tuned</div>
+            <div class="rain-rows" id="rain-fine"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2: XOR -->
+      <div class="rain-phase hidden" id="rain-p2">
+        <div class="rain-arrow">&#8595; XOR (base &#8853; fine) &#8595;</div>
+        <div class="rain-phase-label">Phase 2 &#8212; XOR result (yellow = bit flipped)</div>
+        <div class="rain-rows" id="rain-xor"></div>
+      </div>
+
+      <!-- Phase 3: Split -->
+      <div class="rain-phase hidden" id="rain-p3">
+        <div class="rain-arrow" style="color:var(--text-3)">&#8595; Split byte streams &#8595;</div>
+        <div class="rain-phase-label">Phase 3 &#8212; Separate into EXP and Sign+Mantissa streams</div>
+        <div class="rain-split-boxes">
+          <div class="rain-dashed-box" style="border-color:var(--cyan)">
+            <div class="rain-box-label" style="color:var(--cyan)">EXP stream (bits 14..7)</div>
+            <div class="rain-rows" id="rain-exp"></div>
+          </div>
+          <div class="rain-dashed-box" style="border-color:var(--orange)">
+            <div class="rain-box-label" style="color:var(--orange)">S+M stream (bit15 + bits 6..0)</div>
+            <div class="rain-rows" id="rain-sm"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4: Zstd -->
+      <div class="rain-phase hidden" id="rain-p4">
+        <div class="rain-arrow" style="color:var(--text-3)">&#8595; Zstd compress each &#8595;</div>
+        <div class="rain-phase-label">Phase 4 &#8212; Independent compression</div>
+        <div class="rain-split-boxes">
+          <div class="rain-dashed-box" style="border-color:var(--cyan)">
+            <div class="rain-box-label" style="color:var(--cyan)">EXP &#8594; Zstd</div>
+            <div class="compress-bar" style="margin:.6rem 0">
+              <div class="compress-bar-orig" id="rain-exp-orig"></div>
+              <div class="compress-bar-comp" id="rain-exp-comp"></div>
+            </div>
+            <div class="compress-ratio" style="color:var(--cyan)">Zstd compresses this stream independently</div>
+          </div>
+          <div class="rain-dashed-box" style="border-color:var(--orange)">
+            <div class="rain-box-label" style="color:var(--orange)">S+M &#8594; Zstd</div>
+            <div class="compress-bar" style="margin:.6rem 0">
+              <div class="compress-bar-orig" id="rain-sm-orig"></div>
+              <div class="compress-bar-comp" id="rain-sm-comp"></div>
+            </div>
+            <div class="compress-ratio" style="color:var(--orange)">Zstd compresses this stream independently</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="algorithms" class="section">
+  <div class="section-label">[ ALGORITHMS ]</div>
+  <h2 class="section-title">Core Algorithms</h2>
+  <p class="section-desc">Pseudocode for the ZipLLM deduplication pipeline and the BitX compression kernel.</p>
+
+  <div class="code-grid">
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-dot"></span>
+        <span class="code-dot"></span>
+        <span class="code-dot"></span>
+        <span class="code-title">zipllm_pipeline.rs</span>
+      </div>
+      <pre class="code-body" id="code-pipeline"></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-dot"></span>
+        <span class="code-dot"></span>
+        <span class="code-dot"></span>
+        <span class="code-title">bitx.rs</span>
+      </div>
+      <pre class="code-body" id="code-bitx"></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-cite">
+      <div class="cite-label">Citation</div>
+      <pre class="cite-bib">@inproceedings{wang2026zipllm,
+  title={ZipLLM: Efficient LLM Storage via Model-Aware
+         Synergistic Data Deduplication and Compression},
+  author={Wang, Zirui and Lan, Tingfeng and Su, Zhaoyuan
+          and Yang, Juncheng and Cheng, Yue},
+  year={2026},
+  organization={23rd USENIX Symposium on Networked Systems
+                Design and Implementation (NSDI '26)}
+}</pre>
+    </div>
+    <div class="footer-links">
+      <a href="https://arxiv.org/abs/2505.06252" target="_blank">arXiv 2505.06252</a>
+      <a href="https://github.com/ds2-lab/ZipLLM" target="_blank">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
