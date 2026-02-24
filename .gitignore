@@ -36,6 +36,3 @@ already_downloads.txt
 # models
 /models
 /HF_storage
-
-# Ignore Jupyter Notebook files
-*.ipynb linguist-detectable=false
