@@ -17,7 +17,7 @@ ZipLLM targets three practical outcomes for large-scale model storage systems:
   <img src="docs/data_reduction_ratio_vs_throughput.png" width="400" />
 </p>
 
-For end-to-end quantitative results, see our NSDI'26 paper and the benchmarking scripts in `analysis/`.
+For end-to-end quantitative results, see our [our NSDI'26 paper](#to-cite-ZipLLM) and the benchmarking scripts in `analysis/`.
 
 ## Design Charts
 
@@ -276,7 +276,7 @@ cargo build --release --example bitx
 - **HF_token**: To download models, don't forget to set your HF_token in the environments
 - **Path Resolution**: All paths in config.json are resolved relative to the config file's location
 
-## Paper Citation
+## To Cite ZipLLM
 
 If you use ZipLLM in your research, please cite:
 
