@@ -283,7 +283,7 @@ cargo build --release --example bitx
 If you use ZipLLM in your research, please cite:
 
 ```bibtex
-@misc{zipllm,
+@misc{zipllm_nsdi26,
   title        = {ZipLLM: Efficient LLM Storage via Model-Aware Synergistic Data Deduplication and Compression},
   author={Zirui Wang and Tingfeng Lan and Zhaoyuan Su and Juncheng Yang and Yue Cheng},
   booktitle = {23rd USENIX Symposium on Networked Systems Design and Implementation (NSDI 26)},
