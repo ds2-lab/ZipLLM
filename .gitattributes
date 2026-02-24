@@ -1,2 +1,2 @@
 # Ignore Jupyter Notebook files
-*.ipynb linguist-detectable=false
+*.ipynb linguist-vendored
