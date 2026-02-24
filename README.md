@@ -293,4 +293,5 @@ If you use ZipLLM in your research, please cite:
 
 ## Contributing
 
-We welcome contributions to ZipLLM. 
+We welcome contributions to **ZipLLM**!  
+If you have ideas, improvements, bug fixes, or new features, feel free to open an issue or submit a pull request.
