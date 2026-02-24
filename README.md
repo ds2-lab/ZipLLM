@@ -13,7 +13,7 @@ ZipLLM targets three practical outcomes for large-scale model storage systems:
 - **Fast restoration** for reconstructed models from compressed storage
 - **Scalable processing** with multi-threaded compression/decompression paths
 
-![ZipLLM Architecture Diagram](docs/zipllm_design_overview.png)
+![ZipLLM Results](docs/data_reduction_ratio_vs_throughput.png)
 
 For end-to-end quantitative results, see our NSDI'26 paper and the benchmarking scripts in `analysis/`.
 
@@ -21,7 +21,7 @@ For end-to-end quantitative results, see our NSDI'26 paper and the benchmarking 
 
 ### ZipLLM pipeline at a glance
 
-![ZipLLM Results](docs/data_reduction_ratio_vs_throughput.png)
+![ZipLLM Architecture Diagram](docs/zipllm_design_overview.png)
 
 
 ## Prerequisites
