@@ -283,8 +283,7 @@ If you use ZipLLM in your research, please cite:
   title        = {ZipLLM: Efficient LLM Storage via Model-Aware Synergistic Data Deduplication and Compression},
   author={Zirui Wang and Tingfeng Lan and Zhaoyuan Su and Juncheng Yang and Yue Cheng},
   booktitle = {23rd USENIX Symposium on Networked Systems Design and Implementation (NSDI 26)},
-  year={2025},
-  howpublished = {Project repository},
+  year={2026},
   url = {https://www.usenix.org/conference/nsdi26/presentation/wang-zirui},
   publisher = {USENIX Association}
 }
