@@ -2,6 +2,28 @@
 
 ZipLLM is an efficient LLM storage system that significantly reduces storage cost through tensor-level deduplication and BitX compression.
 
+## Overview
+
+ZipLLM is designed for storing many related LLM checkpoints (base models + fine-tuned variants) without paying full storage cost for every copy. Instead of compressing each checkpoint independently, ZipLLM performs model-aware deduplication at the tensor level and then applies BitX lossless compression to the remaining deltas computed by XORing a fine-tuned model against its base model. 
+
+## Key Results
+
+ZipLLM targets three practical outcomes for large-scale model storage systems:
+- **Lower storage footprint** across families of related checkpoints
+- **Fast restoration** for reconstructed models from compressed storage
+- **Scalable processing** with multi-threaded compression/decompression paths
+
+![ZipLLM Architecture Diagram](docs/zipllm_design_overview.png)
+
+For end-to-end quantitative results, see our NSDI'26 paper and the benchmarking scripts in `analysis/`.
+
+## Design Charts
+
+### ZipLLM pipeline at a glance
+
+![ZipLLM Results](docs/data_reduction_ratio_vs_throughput.png)
+
+
 ## Prerequisites
 
 ### Device Requirements
@@ -251,3 +273,23 @@ cargo build --release --example bitx
 - **Model IDs**: Use real Hugging Face format (`org/model-name`) - automatic conversion to storage format
 - **HF_token**: To download models, don't forget to set your HF_token in the environments
 - **Path Resolution**: All paths in config.json are resolved relative to the config file's location
+
+## Paper Citation
+
+If you use ZipLLM in your research, please cite:
+
+```bibtex
+@misc{zipllm,
+  title        = {ZipLLM: Efficient LLM Storage via Model-Aware Synergistic Data Deduplication and Compression},
+  author={Zirui Wang and Tingfeng Lan and Zhaoyuan Su and Juncheng Yang and Yue Cheng},
+  booktitle = {23rd USENIX Symposium on Networked Systems Design and Implementation (NSDI 26)},
+  year={2025},
+  howpublished = {Project repository},
+  url = {https://www.usenix.org/conference/nsdi26/presentation/wang-zirui},
+  publisher = {USENIX Association}
+}
+```
+
+## Contributing
+
+We welcome contributions to ZipLLM. 
