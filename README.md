@@ -21,6 +21,11 @@ On a 3,000+ LLM storage dataset, ZipLLM significantly outperforms all baselines:
 
 For end-to-end quantitative results, see our [our NSDI'26 paper](https://arxiv.org/abs/2505.06252) and the benchmarking scripts in `analysis/`.
 
+<table>
+    <tr><th align="center">Compression speed demo</th></tr>
+    <tr><td align="center"><img src="./docs/zipnn_vs_bitx_gif" /></td></tr>
+</table>
+
 ## Design Charts
 
 ### ZipLLM pipeline at a glance
