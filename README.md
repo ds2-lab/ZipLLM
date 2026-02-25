@@ -23,7 +23,7 @@ For end-to-end quantitative results, see our [our NSDI'26 paper](https://arxiv.o
 
 <table>
     <tr><th align="center">Compression speed demo</th></tr>
-    <tr><td align="center"><img src="./docs/zipnn_vs_bitx_gif" /></td></tr>
+    <tr><td align="center"><img src="./docs/zipnn_vs_bitx_gif.gif" /></td></tr>
 </table>
 
 ## Design Charts
